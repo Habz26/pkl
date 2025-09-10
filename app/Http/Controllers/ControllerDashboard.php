@@ -20,8 +20,11 @@ class ControllerDashboard extends Controller
         // Ambil dari DB master
         $totalDokter = DB::connection('mysql')->table('dokter')->count();
         $totalPerawat = DB::connection('mysql')->table('perawat')->count();
+<<<<<<< HEAD
         // Semua pasien kecuali yang status = 0
 
+=======
+>>>>>>> d4a786386f91865d97555594dd61e55f3677e272
         $totalBidan = DB::connection('mysql')->table('pegawai')->join('referensi', 'pegawai.profesi', '=', 'referensi.ref_id')->where('pegawai.profesi', 6)->where('referensi.deskripsi', 'Bidan')->count();
         $totalLab = DB::connection('mysql')->table('pegawai')->join('referensi', 'pegawai.profesi', '=', 'referensi.ref_id')->where('pegawai.profesi', 2)->where('referensi.deskripsi', 'Analis') ->count();
         $totalRadiografer = DB::connection('mysql')->table('pegawai')->join('referensi', 'pegawai.profesi', '=', 'referensi.ref_id')->where('pegawai.profesi', 8)->where('referensi.deskripsi', 'Radiografer') ->count();
@@ -45,6 +48,14 @@ class ControllerDashboard extends Controller
             ->whereNotIn('jenis', [1, 2])
             ->sum('total');
 
+<<<<<<< HEAD
         return view('dashboard', compact('totalPendaftar', 'totalDokter', 'totalPasien', 'totalRawatJalan', 'totalRawatInap', 'totalIGD', 'totalPerawat', 'dataChart', 'totalBpjs', 'totalUmum', 'totalLainnya', 'totalBidan','totalLab','totalRadiografer'));
+=======
+        $totalPiutang = DB::connection('pembayaran')->table('piutang_perusahaan')->sum('total'); // ganti nama kolom kalau berbeda
+
+        $totalLainnya = $totalDeposit + $totalPiutang;
+
+        return view('dashboard', compact('totalPendaftar', 'totalDokter', 'totalPasien', 'totalRawatJalan', 'totalRawatInap', 'totalIGD', 'totalPerawat', 'dataChart', 'totalBpjs', 'totalUmum', 'totalLainnya', 'totalDeposit', 'totalPiutang', 'totalBidan','totalLab','totalRadiografer'));
+>>>>>>> d4a786386f91865d97555594dd61e55f3677e272
     }
 }
