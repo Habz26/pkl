@@ -134,7 +134,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Bidan</span>
-                            <span class="info-box-number">-</span>
+                            <span class="info-box-number">{{ number_format($totalBidan, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -147,7 +147,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">LAB</span>
-                            <span class="info-box-number">-</span>
+                            <span class="info-box-number">{{ number_format($totalLab, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -160,7 +160,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Radiografer</span>
-                            <span class="info-box-number">-</span>
+                             <span class="info-box-number">{{ number_format($totalRadiografer, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
