@@ -160,11 +160,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Radiografer</span>
-<<<<<<< HEAD
                             <span class="info-box-number">{{ number_format($totalRadiografer, 0, ',', '.') }}</span>
-=======
-                             <span class="info-box-number">{{ number_format($totalRadiografer, 0, ',', '.') }}</span>
->>>>>>> d4a786386f91865d97555594dd61e55f3677e272
                         </div>
                     </div>
                 </div>
