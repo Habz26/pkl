@@ -1,8 +1,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ url('/') }}" class="brand-link">
+    <a href="{{ url('/dashboard') }}" class="brand-link">
         <img src="{{ asset('adminlte/dist/img/logo rskk.png') }}" 
-             alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+             alt="logo RSKK" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light d-block text-wrap" style="white-space: normal; line-height: 1.2;">
     Rumah Sakit <br> Kesehatan Kerja
 </span>

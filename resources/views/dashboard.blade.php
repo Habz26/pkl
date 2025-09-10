@@ -134,7 +134,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Bidan</span>
-                            <span class="info-box-number">-</span>
+                            <span class="info-box-number">{{ number_format($totalBidan, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -147,7 +147,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">LAB</span>
-                            <span class="info-box-number">-</span>
+                            <span class="info-box-number">{{ number_format($totalLab, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -160,7 +160,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Radiografer</span>
-                            <span class="info-box-number">-</span>
+                            <span class="info-box-number">{{ number_format($totalRadiografer, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -169,8 +169,8 @@
 
             <div class="card">
                 <div class="card-header border-0">
-                    <h3 class="card-title">Total Pendaftar </h3>
-                    <span style="margin-left: 40%; "><b>Periode Tahun 2023</b></span>
+                    <h3 class="card-title">Total Pendapatan </h3>
+                    <span style="margin-left: 40%; "><b>Periode Tahun 2020</b></span>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
@@ -209,9 +209,7 @@
 
                         <div class="col-md-4">
                             <span class="text-muted">Lainnya</span>
-                            <h5 class="font-weight-bold text-secondary" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Deposit: Rp {{ number_format($totalDeposit, 0, ',', '.') }} 
-                                Piutang: Rp {{ number_format($totalPiutang, 0, ',', '.') }}">
+                            <h5 class="font-weight-bold text-secondary">
                                 Rp {{ number_format($totalLainnya, 0, ',', '.') }}
                             </h5>
                         </div>
@@ -234,7 +232,7 @@
             data: {
                 labels: chartData.map(item => "Bulan " + item.bulan),
                 datasets: [{
-                    label: 'Pendaftar',
+                    label: 'Pendapatan',
                     data: chartData.map(item => item.total),
                     borderColor: '#007bff',
                     backgroundColor: 'rgba(0, 123, 255, 0.2)',
