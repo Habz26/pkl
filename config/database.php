@@ -76,6 +76,34 @@ return [
                 'strict' => true,
                 'engine' => null,
             ],
+
+            'bpjs' => [
+                'driver' => 'mysql',
+                'host' => '172.20.0.42',
+                'port' => '3306',
+                'database' => 'bpjs',
+                'username' => 'pkl_RSKK_2025',
+                'password' => 'pkl_RSKK_2025',
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'strict' => true,
+                'engine' => null,
+            ],
+
+            'pembayaran' => [
+                'driver' => 'mysql',
+                'host' => '172.20.0.42',
+                'port' => '3306',
+                'database' => 'pembayaran',
+                'username' => 'pkl_RSKK_2025',
+                'password' => 'pkl_RSKK_2025',
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'strict' => true,
+                'engine' => null,
+            ],
         
 
         'mariadb' => [

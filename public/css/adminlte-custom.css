@@ -1,0 +1,24 @@
+/* Sidebar collapse (mini mode) */
+.sidebar-mini.sidebar-collapse .content-wrapper,
+.sidebar-mini.sidebar-collapse .main-header,
+.sidebar-mini.sidebar-collapse .main-footer {
+    margin-left: 4.6rem !important;
+    transition: margin-left .3s ease-in-out;
+}
+
+/* Sidebar expand (hover mode) */
+.sidebar-mini.sidebar-collapse .main-sidebar:hover ~ .content-wrapper,
+.sidebar-mini.sidebar-collapse .main-sidebar:hover ~ .main-header,
+.sidebar-mini.sidebar-collapse .main-sidebar:hover ~ .main-footer {
+    transition: margin-left .3s ease-in-out;
+}
+
+/* Sembunyikan scrollbar (tetap bisa scroll) */
+.row.flex-nowrap::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+.row.flex-nowrap {
+    -ms-overflow-style: none;  /* IE/Edge */
+    scrollbar-width: none;     /* Firefox */
+}
+

@@ -1,101 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dashboard')</title>
 
-    {{-- AdminLTE CSS --}}
+    {{-- AdminLTE + FA --}}
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
-    {{-- Font Awesome --}}
     <link rel="stylesheet" href="{{ asset('adminlte/fontawesome/css/all.min.css') }}">
-    {{-- Bootstrap --}}
-    <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
-    {{-- Custom CSS (opsional) --}}
-
-    <link rel="stylesheet" href="{{ asset('uplot/dist/uPlot.min.css') }}">
-
-    @vite([
-    'resources/css/app.css',
-    'resources/js/app.js',
-    'node_modules/admin-lte/dist/css/adminlte.min.css',
-    'node_modules/admin-lte/dist/js/adminlte.min.js'
-])
+    {{-- Custom kecil (tanpa margin-left override) --}}
+    <link rel="stylesheet" href="{{ asset('css/adminlte-custom.css') }}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
 </head>
-<body class="hold-transition sidebar-mini">
-<div class="wrapper">
 
-    {{-- Navbar --}}
-    @include('layouts.partials.navbar')
+<body class="hold-transition sidebar-mini layout-fixed sidebar-collapse">
+    <div class="wrapper">
 
-    {{-- Sidebar --}}
-    @include('layouts.partials.sidebar')
+        {{-- Navbar --}}
+        @include('layouts.partials.navbar')
 
-    {{-- Content Wrapper --}}
-    <div class="content-wrapper">
-        <section class="content pt-3">
-            <div class="container-fluid">
-                @yield('content')
-            </div>
-        </section>
+        {{-- Sidebar --}}
+        @include('layouts.partials.sidebar')
+
+        {{-- Content --}}
+        <div class="content-wrapper">
+            <section class="content pt-3">
+                <div class="container-fluid">
+                    @yield('content')
+                </div>
+            </section>
+        </div>
+
+        {{-- Footer --}}
+        @include('layouts.partials.footer')
+
     </div>
 
-    {{-- Footer --}}
-    @include('layouts.partials.footer')
+    {{-- JS core --}}
+    <script src="{{ asset('adminlte/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('adminlte/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
 
-</div>
+    {{-- Hover: auto expand/collapse --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const body = document.body;
+            const sidebar = document.querySelector('.main-sidebar');
+            if (!sidebar) return;
 
-{{-- JS --}}
-<script src="{{ asset('adminlte/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('adminlte/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
-<script src="{{ asset('uplot/dist/uPlot.iife.min.js') }}"></script>
+            // mulai collapsed
+            body.classList.add('sidebar-collapse');
 
-@section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Area Chart
-    const ctxArea = document.createElement('canvas');
-    document.getElementById('areaChart').appendChild(ctxArea);
+            // expand saat hover
+            sidebar.addEventListener('mouseenter', () => {
+                if (window.innerWidth >= 992) {
+                    body.classList.remove('sidebar-collapse');
+                }
+            });
 
-    new Chart(ctxArea, {
-        type: 'line',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [{
-                label: 'Area Dataset',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                fill: true,
-                borderColor: 'rgba(60,141,188,1)',
-                backgroundColor: 'rgba(60,141,188,0.2)',
-                tension: 0.4
-            }]
-        }
-    });
+            // collapse saat mouse keluar, kalau tidak ada menu terbuka
+            sidebar.addEventListener('mouseleave', () => {
+                if (window.innerWidth >= 992) {
+                    const hasOpenMenu = sidebar.querySelector('.menu-open');
+                    if (!hasOpenMenu) {
+                        body.classList.add('sidebar-collapse');
+                    }
+                }
+            });
 
-    // Line Chart
-    const ctxLine = document.createElement('canvas');
-    document.getElementById('lineChart').appendChild(ctxLine);
+            // ====== Tambahan penting ======
+            // kalau submenu ditutup, cek lagi sidebar
+            $(sidebar).on('collapsed.lte.treeview', function() {
+                if (window.innerWidth >= 992) {
+                    body.classList.add('sidebar-collapse');
+                }
+            });
+        });
+    </script>
+    <script src="https://kit.fontawesome.com/374fec5aca.js" crossorigin="anonymous"></script>
 
-    new Chart(ctxLine, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-            datasets: [{
-                label: 'Line Dataset',
-                data: [28, 48, 40, 19, 86, 27, 90],
-                borderColor: 'rgba(210, 214, 222, 1)',
-                backgroundColor: 'rgba(210, 214, 222, 0.5)',
-                fill: false,
-                tension: 0.4
-            }]
-        }
-    });
-});
-</script>
-@endsection
 
+
+    {{-- tempat script per-halaman --}}
+    @yield('scripts')
+
+    {{-- contoh: Chart.js per halaman (opsional) --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
+
 </html>

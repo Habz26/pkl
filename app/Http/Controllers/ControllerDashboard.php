@@ -7,6 +7,7 @@ use App\Models\Pendaftaran;
 use App\Models\Dokter;
 use App\Models\Pasien;
 use App\Models\Tindakan;
+use App\Models\Perawat;
 use Illuminate\Support\Facades\DB;
 
 class ControllerDashboard extends Controller
@@ -18,6 +19,7 @@ class ControllerDashboard extends Controller
 
         // Ambil dari DB master
         $totalDokter = DB::connection('mysql')->table('dokter')->count();
+        $totalPerawat = DB::connection('mysql')->table('perawat')->count();
         // Semua pasien kecuali yang status = 0
         $totalPasien = DB::table('pasien')->where('status', 1)->count();
         $pasienStatus1 = DB::table('pasien')->where('status', 1)->count();
@@ -26,6 +28,40 @@ class ControllerDashboard extends Controller
         $totalRawatInap = DB::table('tindakan')->where('nama', 'like', 'Rawat Inap%')->count();
         $totalIGD = DB::table('tindakan')->where('nama', 'like', 'Instalasi Gawat Darurat%')->count();
 
-        return view('dashboard', compact('totalPendaftar', 'totalDokter', 'totalPasien', 'pasienStatus1', 'totalRawatJalan', 'totalRawatInap', 'totalIGD'));
+        // Query ke DB pendaftaran
+        $dataChart = DB::connection('pendaftaran')
+            ->table('pendaftaran')
+            ->selectRaw('MONTH(tanggal) as bulan, COUNT(*) as total')
+            ->whereDate('tanggal', '>=', '2023-01-01') // filter dari 2023-01-01
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->get();
+
+        $totalBpjs = DB::connection('bpjs')->table('klaim')->sum('biaya_bySetujui');
+
+        $totalUmum = DB::connection('pembayaran')->table('pembayaran_tagihan')->sum('total');
+
+        // total Lainnya (deposit + transfer + piutang_perusahaan)
+        $totalDeposit = DB::connection('pembayaran')->table('deposit')->sum('total'); // ganti nama kolom kalau berbeda
+
+        $totalPiutang = DB::connection('pembayaran')->table('piutang_perusahaan')->sum('total'); // ganti nama kolom kalau berbeda
+
+        $totalLainnya = $totalDeposit + $totalPiutang;
+
+        return view('dashboard', compact('totalPendaftar',
+                                         'totalDokter',
+                                         'totalPasien', 
+                                         'totalRawatJalan', 
+                                         'totalRawatInap', 
+                                         'totalIGD', 
+                                         'totalPerawat', 
+                                         'dataChart', 
+                                         'totalBpjs', 
+                                         'totalUmum', 
+                                         'totalLainnya', 
+                                         'totalDeposit', 
+                                         'totalPiutang'
+                                        )
+                                    );
     }
 }
