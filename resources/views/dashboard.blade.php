@@ -4,26 +4,51 @@
 
 @section('content')
     <!-- Content Header -->
-    <section class="content-header">
+    <section class="content-header pb-0 mb-0">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1></h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Dashboard</li>
-                    </ol>
+            <div class="row mb-1">
+                <div class="col-sm-12">
+                    <div class="card shadow-sm border-0 rounded-3">
+                        <div class="card-header bg-primary text-white py-2 d-flex align-items-center">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            <h6 class="mb-0 fw-bold">Periode Data</h6>
+                        </div>
+                        <div class="card-body py-3">
+                            <form action="{{ route('dashboard') }}" method="GET" class="row g-3 align-items-end">
+
+                                {{-- Tanggal Awal --}}
+                                <div class="col-md-4">
+                                    <label for="date_start" class="form-label small fw-bold text-muted">Tanggal Awal</label>
+                                    <input type="date" id="date_start" name="date_start"
+                                        value="{{ request('date_start') }}" class="form-control form-control-sm shadow-sm">
+                                </div>
+
+                                {{-- Tanggal Akhir --}}
+                                <div class="col-md-4">
+                                    <label for="date_end" class="form-label small fw-bold text-muted">Tanggal Akhir</label>
+                                    <input type="date" id="date_end" name="date_end" value="{{ request('date_end') }}"
+                                        class="form-control form-control-sm shadow-sm">
+                                </div>
+
+                                {{-- Tombol Filter --}}
+                                <div class="col-md-4 d-flex">
+                                    <button type="submit" class="btn btn-primary btn-sm shadow-sm px-4 ms-auto">
+                                        <i class="fas fa-filter me-1"></i> Filter
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-
             {{-- Baris 1 --}}
             <div class="row flex-nowrap overflow-auto">
                 {{-- Pendaftar --}}
@@ -170,7 +195,31 @@
             <div class="card">
                 <div class="card-header border-0">
                     <h3 class="card-title">Total Pendapatan </h3>
-                    <span style="margin-left: 40%; "><b>Periode Tahun 2020</b></span>
+                    <span style="margin-left: 40%;">
+                        <b>
+                            @if (request('date_start') && request('date_end'))
+                                Periode dari {{ \Carbon\Carbon::parse(request('date_start'))->translatedFormat('d F Y') }}
+                                - {{ \Carbon\Carbon::parse(request('date_end'))->translatedFormat('d F Y') }}
+                            @elseif (request('date_start'))
+                                Periode dari {{ \Carbon\Carbon::parse(request('date_start'))->translatedFormat('d F Y') }}
+                                - Sekarang
+                            @elseif (request('date_end'))
+                                Periode sampai {{ \Carbon\Carbon::parse(request('date_end'))->translatedFormat('d F Y') }}
+                            @elseif (request('filter') == 'bulan-berjalan')
+                                Periode Bulan {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('F Y') }}
+                            @elseif (request('bulan'))
+                                Periode Tahun {{ $tahun }} Bulan
+                                {{ $namaBulan[request('bulan')] ?? request('bulan') }}
+                            @elseif (request('filter'))
+                                Periode Tahun {{ request('filter') }}
+                            @else
+                                Periode Tahun {{ now()->year }}
+                            @endif
+                        </b>
+                    </span>
+
+
+
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
@@ -230,7 +279,8 @@
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: chartData.map(item => "Bulan " + item.bulan),
+
+                labels: chartData.map(item => item.label),
                 datasets: [{
                     label: 'Pendapatan',
                     data: chartData.map(item => item.total),
