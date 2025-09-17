@@ -195,7 +195,7 @@
             <div class="card">
                 <div class="card-header border-0">
                     <h3 class="card-title">Total Pendapatan </h3>
-                    <span style="margin-left: 40%;">
+                    <div class="m-0" style="display: flex; justify-content: center; width: 100%;">
                         <b>
                             @if (request('date_start') && request('date_end'))
                                 Periode dari {{ \Carbon\Carbon::parse(request('date_start'))->translatedFormat('d F Y') }}
@@ -216,7 +216,8 @@
                                 Periode Tahun {{ now()->year }}
                             @endif
                         </b>
-                    </span>
+                    </div>
+
 
 
 
@@ -235,7 +236,7 @@
                         <!-- Chart full width -->
                         <div class="col-12">
                             <div class="position-relative mb-4">
-                                <canvas id="revenue-chart" height="200"></canvas>
+                                <canvas id="revenue-chart" height="70"></canvas>
                             </div>
                         </div>
                     </div>
@@ -271,43 +272,49 @@
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        var chartData = @json($dataChart);
+        const dataChart = @json($dataChart);
 
-        // ambil canvas
-        var ctx = document.getElementById('revenue-chart').getContext('2d');
+        const labels = dataChart.map(item => item.label);
 
+        const chartData = {
+            labels: labels,
+            datasets: [{
+                    label: 'BPJS',
+                    data: dataChart.map(item => item.bpjs),
+                    borderColor: 'blue',
+                    fill: false
+                },
+                {
+                    label: 'Umum',
+                    data: dataChart.map(item => item.umum),
+                    borderColor: 'green',
+                    fill: false
+                },
+                {
+                    label: 'Lainnya',
+                    data: dataChart.map(item => item.lainnya),
+                    borderColor: 'red',
+                    fill: false
+                }
+            ]
+        };
+
+        // Inisialisasi Chart.js
+        const ctx = document.getElementById('revenue-chart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
-            data: {
-
-                labels: chartData.map(item => item.label),
-                datasets: [{
-                    label: 'Pendapatan',
-                    data: chartData.map(item => item.total),
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#007bff'
-                }]
-            },
+            data: chartData,
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                        position: 'top',
+                    }                    
                 }
             }
         });
     </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

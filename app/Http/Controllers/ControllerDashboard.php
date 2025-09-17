@@ -108,23 +108,31 @@ class ControllerDashboard extends Controller
         $totalRadiografer = DB::connection('mysql')->table('pegawai')->join('referensi', 'pegawai.profesi', '=', 'referensi.ref_id')->where('pegawai.profesi', 8)->where('referensi.deskripsi', 'Radiografer')->count();
 
         // ================= QUERY KEUANGAN (SMART GROUPING) =================
+        // ================= QUERY KEUANGAN (SMART GROUPING) =================
         $diffInDays = $dateStart->diffInDays($dateEnd);
 
         if ($diffInDays <= 31) {
-            // Range pendek (≤ 1 bulan) → group by hari
+            // Group by hari
             $dataChart = DB::connection('pembayaran')
                 ->table('tagihan')
-                ->selectRaw('DAY(tanggal) as hari, SUM(total) as total')
+                ->selectRaw(
+                    "
+            DAY(tanggal) as waktu,
+            SUM(CASE WHEN jenis = 2 THEN total ELSE 0 END) as bpjs,
+            SUM(CASE WHEN jenis = 1 AND status = 2 THEN total ELSE 0 END) as umum,
+            SUM(CASE WHEN jenis NOT IN (1, 2) THEN total ELSE 0 END) as lainnya
+        ",
+                )
                 ->whereBetween('tanggal', [$dateStart, $dateEnd])
-                ->groupBy('hari')
-                ->orderBy('hari')
+                ->groupBy('waktu')
+                ->orderBy('waktu')
                 ->get()
                 ->map(function ($item) {
-                    $item->label = 'Hari ' . $item->hari;
+                    $item->label = 'Hari ' . $item->waktu;
                     return $item;
                 });
         } elseif ($diffInDays <= 370) {
-            // Range sedang (≤ 1 tahun) → group by bulan
+            // Group by bulan
             $namaBulan = [
                 1 => 'Januari',
                 2 => 'Februari',
@@ -142,26 +150,40 @@ class ControllerDashboard extends Controller
 
             $dataChart = DB::connection('pembayaran')
                 ->table('tagihan')
-                ->selectRaw('MONTH(tanggal) as bulan, SUM(total) as total')
+                ->selectRaw(
+                    "
+            MONTH(tanggal) as waktu,
+            SUM(CASE WHEN jenis = 2 THEN total ELSE 0 END) as bpjs,
+            SUM(CASE WHEN jenis = 1 AND status = 2 THEN total ELSE 0 END) as umum,
+            SUM(CASE WHEN jenis NOT IN (1, 2) THEN total ELSE 0 END) as lainnya
+        ",
+                )
                 ->whereBetween('tanggal', [$dateStart, $dateEnd])
-                ->groupBy('bulan')
-                ->orderBy('bulan')
+                ->groupBy('waktu')
+                ->orderBy('waktu')
                 ->get()
                 ->map(function ($item) use ($namaBulan) {
-                    $item->label = $namaBulan[$item->bulan] ?? $item->bulan;
+                    $item->label = $namaBulan[$item->waktu] ?? 'Bulan ' . $item->waktu;
                     return $item;
                 });
         } else {
-            // Range panjang → group by tahun
+            // Group by tahun
             $dataChart = DB::connection('pembayaran')
                 ->table('tagihan')
-                ->selectRaw('YEAR(tanggal) as tahun, SUM(total) as total')
+                ->selectRaw(
+                    "
+            YEAR(tanggal) as waktu,
+            SUM(CASE WHEN jenis = 2 THEN total ELSE 0 END) as bpjs,
+            SUM(CASE WHEN jenis = 1 AND status = 2 THEN total ELSE 0 END) as umum,
+            SUM(CASE WHEN jenis NOT IN (1, 2) THEN total ELSE 0 END) as lainnya
+        ",
+                )
                 ->whereBetween('tanggal', [$dateStart, $dateEnd])
-                ->groupBy('tahun')
-                ->orderBy('tahun')
+                ->groupBy('waktu')
+                ->orderBy('waktu')
                 ->get()
                 ->map(function ($item) {
-                    $item->label = 'Tahun ' . $item->tahun;
+                    $item->label = 'Tahun ' . $item->waktu;
                     return $item;
                 });
         }
